@@ -1,0 +1,22 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="" style="display:flex; justify-content:center; margin-top:25vh;">
+        @guest
+        <form action="{{route('auth.store')}}" method="post" class="form col-centered">
+            @csrf 
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="text" name="email" id="email">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" name="password" id="password">
+            </div>
+            <div class="mx-auto">
+                <input type="submit" class="btn btn-primary" value="Login">
+            </div>
+        </form>
+        @endguest
+</div>
+@endsection
