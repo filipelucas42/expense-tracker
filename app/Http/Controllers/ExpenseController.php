@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Expense;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,12 +41,10 @@ class ExpenseController extends Controller
     {
         $input = $request->all();
 
-        //dd($input);
         $input['user_id'] = Auth::user()->id;
         Expense::create($input);
-        $categories = Auth::user()->categories()->get();
-        $expenses = Auth::user()->expenses()->get();
-        //return view('resource.expense.index', compact("categories","expenses"));
+ /*        $categories = Auth::user()->categories()->get();
+        $expenses = Auth::user()->expenses()->get(); */
         return back();
     }
 
@@ -91,6 +90,37 @@ class ExpenseController extends Controller
      */
     public function destroy(Expense $expense)
     {
-        //
+        if($expense->user_id != Auth::user()->id){
+            abort(401);
+        }
+        $expense->delete();
+        return back();
+    }
+
+    public function csvImport(Request $request){
+        $user = Auth::user();
+        $file = $request->file('csv');
+        $path = $file->path();
+        $handle = fopen($path,"r");
+        while($row = fgetcsv($handle)){
+
+            $category_name = strtolower(trim($row[2]));
+
+            $description = $row[3] ? trim($row[3]) : "";
+            $value = trim($row[0]);
+            $date = trim($row[1]);
+            if($user->categories()->where('name', $category_name)->count()){
+                $category = $user->categories()->where('name', $category_name)->get();
+            } else {
+                $category = Category::create(["user_id" => $user->id, "name" => $category_name]);
+            }
+            $category = $category->first();
+            Expense::create(["value" => $value, "date" => $date, "description" => $description, "category_id" => $category->id, "user_id" => $user->id]);
+        }
+        return redirect()->route('category.index');
+    }
+
+    public function csvIndex(){
+        return view('resource.expense.csvIndex');
     }
 }

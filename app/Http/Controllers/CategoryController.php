@@ -53,7 +53,8 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        $expenses = Auth::user()->expenses()->where("category_id", $category->id)->get();
+        return view('resource.category.show', compact("category", "expenses"));
     }
 
     /**
@@ -94,4 +95,5 @@ class CategoryController extends Controller
         $categories = Auth::user()->categories()->get();
         return view('resource.category.index', compact("categories"));
     }
+
 }

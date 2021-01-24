@@ -32,6 +32,7 @@
             <th scope="col">Date</th>
             <th scope="col">Description</th>
             <th scope="col">Category</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -44,8 +45,18 @@
             <td>
                 {{$expense->description}}
             </td>
-            <td>{{$expense->category->name}}</td>
-
+            <td><a href="{{route('category.show',$expense->category->id)}}">{{$expense->category->name}}</a></td>
+            <td class="d-flex">
+                <form class="m-1" action="{{route('expense.edit', $expense->id)}}" method="post">
+                    @csrf
+                    <button type="submit" class="btn btn-warning">Modify</button>
+                </form>
+                <form class="m-1" action="{{route('expense.destroy', $expense->id)}}" method="post">
+                    @csrf
+                    @method('delete')
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
         </tr>
     @endforeach
     </tbody>

@@ -11,7 +11,7 @@
 
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Expense Tracker</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,10 +24,13 @@
                 </li>
                 @auth
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{route('expense.index')}}">Tracker</a>
+                    <a class="nav-link" aria-current="page" href="{{route('expense.index')}}">Tracker</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{route('category.index')}}">Categories</a>
+                    <a class="nav-link" aria-current="page" href="{{route('category.index')}}">Categories</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" aria-current="page" href="{{route('csv')}}">Import/Export csv</a>
                 </li>
                 @endauth
             </ul>
