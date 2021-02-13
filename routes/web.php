@@ -21,6 +21,7 @@ Route::get('/', function () {
 
 Route::resource('auth', AuthenticationController::class);
 Route::resource('category', CategoryController::class)->middleware('auth');
-Route::get('/csv', [ExpenseController::class, "csvIndex"])->name('csv');
-Route::post('/csv', [ExpenseController::class, "csvImport"]);
+Route::get('/csv', [ExpenseController::class, "csvIndex"])->name('csv')->middleware('auth');
+Route::post('/csv', [ExpenseController::class, "csvImport"])->middleware('auth');
+Route::get('/csv/export', [ExpenseController::class, "csvExport"])->name('csvExport')->middleware('auth');
 Route::resource('expense', ExpenseController::class)->middleware('auth');

@@ -17,7 +17,7 @@ class ExpenseController extends Controller
     public function index()
     {
         $categories = Auth::user()->categories()->get();
-        $expenses = Auth::user()->expenses()->get();
+        $expenses = Auth::user()->expenses()->orderByDesc('date')->paginate(10);
         return view('resource.expense.index', compact("categories", "expenses"));
     }
 
@@ -110,11 +110,11 @@ class ExpenseController extends Controller
             $value = trim($row[0]);
             $date = trim($row[1]);
             if($user->categories()->where('name', $category_name)->count()){
-                $category = $user->categories()->where('name', $category_name)->get();
+                $category = $user->categories()->where('name', $category_name)->get()->first();
             } else {
                 $category = Category::create(["user_id" => $user->id, "name" => $category_name]);
             }
-            $category = $category->first();
+
             Expense::create(["value" => $value, "date" => $date, "description" => $description, "category_id" => $category->id, "user_id" => $user->id]);
         }
         return redirect()->route('category.index');
@@ -122,5 +122,37 @@ class ExpenseController extends Controller
 
     public function csvIndex(){
         return view('resource.expense.csvIndex');
+    }
+
+    public function csvExport(){
+        $headers = [
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0'
+        ,   'Content-type'        => 'text/csv'
+        ,   'Content-Disposition' => 'attachment; filename=expenses.csv'
+        ,   'Expires'             => '0'
+        ,   'Pragma'              => 'public'
+        ];
+        //dd("test");
+
+        $callback = function()
+        {
+            $user = Auth::user();
+            $file = fopen('php://output', 'w');
+            $expenses = $user->expenses()->get();
+            $headers = [
+                'Cache-Control'       => 'must-revalidate, post-check=0, pre-  check=0'
+                ,   'Content-type'        => 'text/csv'
+                ,   'Content-Disposition' => 'attachment; filename=galleries.csv'
+                ,   'Expires'             => '0'
+                ,   'Pragma'              => 'public'
+               ];
+            foreach($expenses as $expense){
+                $category = $expense->category()->get()->first();
+                $row = [$expense->value, $expense->date, $category->name, $expense->description];
+                fputcsv($file, $row);
+            }
+            fclose($file);
+        };
+        return response()->stream($callback,200, $headers);
     }
 }

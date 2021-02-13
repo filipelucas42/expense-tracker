@@ -12,4 +12,7 @@
     <button type="submit" class="btn btn-primary">Submit csv</button>
 </form>
 </div>
+<div class="container">
+<a href="{{route('csvExport')}}" target="_blank"><button class="btn btn-primary">Export csv</button></a>
+</div>
 @endsection

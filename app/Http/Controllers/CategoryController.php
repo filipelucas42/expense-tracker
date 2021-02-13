@@ -40,6 +40,7 @@ class CategoryController extends Controller
     {
         $input = $request->all();
         $input['user_id'] = Auth::user()->id;
+        $input['name'] = trim(strtolower($input['name']));
         Category::create($input);
         $categories = Auth::user()->categories()->get();
         return view('resource.category.index', compact("categories"));
@@ -53,7 +54,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        $expenses = Auth::user()->expenses()->where("category_id", $category->id)->get();
+        $expenses = Auth::user()->expenses()->where("category_id", $category->id)->paginate(10);
         return view('resource.category.show', compact("category", "expenses"));
     }
 

@@ -27,5 +27,22 @@
     @endforeach
     </tbody>
 </table>
+@if($expenses->hasPages())
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        @if($expenses->previousPageUrl())
+        <a class="page-link" href="{{$expenses->previousPageUrl()}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+        @endif
+        <li class="page-item"><a class="page-link" >{{$expenses->currentPage()}} of {{$expenses->lastPage()}}</a></li>
+        @if($expenses->nextPageUrl())
+        <a class="page-link" href="{{$expenses->nextPageUrl()}}" aria-label="Previous">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+        @endif
+    </ul>
+</nav>
+@endif
 </div>
 @endsection
